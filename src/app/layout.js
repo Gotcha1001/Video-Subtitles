@@ -1,16 +1,6 @@
-import localFont from "next/font/local";
+import SparklesIcon from "@/components/SparklesIcon";
 import "./globals.css";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import Link from "next/link";
 
 export const metadata = {
   title: "Create Next App",
@@ -20,10 +10,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className="bg-gradient-to-b from-[#9349ad] to-[#2E1066] min-h-screen text-white">
+        <main className="p-4 max-w-2xl mx-auto">
+          <header className="flex justify-between my-2 sm:my-8 ">
+            <Link href="/" className="flex gap-1">
+              <SparklesIcon />
+              <span> EpicCaptions</span>
+            </Link>
+            <nav className="flex items-center gap-2 sm:gap-6 text-white/80 text-sm sm:text-base">
+              <Link href="/">Home</Link>
+              <Link href="/pricing">Pricing</Link>
+              <Link href="mailto:codenow101@gmail.com">Contact</Link>
+            </nav>
+          </header>
+          {children}
+        </main>
       </body>
     </html>
   );
