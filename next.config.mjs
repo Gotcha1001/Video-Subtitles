@@ -8,12 +8,6 @@ const nextConfig = {
     });
     return config;
   },
-  // Add these lines
-  api: {
-    bodyParser: {
-      sizeLimit: "100mb",
-    },
-  },
 };
 
 export default nextConfig;

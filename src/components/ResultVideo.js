@@ -18,7 +18,11 @@ export default function ResultVideo({ filename, transcriptionItems }) {
 
   useEffect(() => {
     const video = videoRef.current;
-    video.src = videoUrl;
+    if (video) {
+      video.src = videoUrl;
+    } else {
+      console.warn("Video element is not available.");
+    }
 
     const initFFmpeg = async () => {
       try {
@@ -48,7 +52,7 @@ export default function ResultVideo({ filename, transcriptionItems }) {
     };
 
     initFFmpeg();
-  }, []);
+  }, [videoUrl]);
 
   function toFFmpegColor(rgb) {
     const bgr = rgb.slice(5, 7) + rgb.slice(3, 5) + rgb.slice(1, 3);
@@ -105,12 +109,23 @@ export default function ResultVideo({ filename, transcriptionItems }) {
 
       ffmpeg.on("log", ({ message }) => {
         const regexResult = /time=([0-9:.]+)/.exec(message);
-        if (regexResult && regexResult?.[1]) {
-          const howMuchIsDone = regexResult?.[1];
-          const [hours, minutes, seconds] = howMuchIsDone.split(":");
-          const doneTotalSeconds = hours * 3600 + minutes * 60 + seconds;
-          const videoProgress = doneTotalSeconds / duration;
-          setProgress(videoProgress);
+        if (regexResult && regexResult[1]) {
+          const howMuchIsDone = regexResult[1];
+          const timeParts = howMuchIsDone.split(":");
+
+          // Ensure there are 3 parts (hours, minutes, seconds)
+          if (timeParts.length === 3) {
+            const [hours, minutes, seconds] = timeParts;
+
+            // Ensure each value is a valid number before calculating
+            const doneTotalSeconds =
+              parseInt(hours) * 3600 +
+              parseInt(minutes) * 60 +
+              parseInt(seconds);
+            const videoProgress = doneTotalSeconds / duration;
+
+            setProgress(videoProgress);
+          }
         }
       });
 
