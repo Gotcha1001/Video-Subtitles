@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function UploadForm() {
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0); // State for progress
 
   const router = useRouter();
 
@@ -23,12 +24,20 @@ export default function UploadForm() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          onUploadProgress: (progressEvent) => {
+            const total = progressEvent.total;
+            const current = progressEvent.loaded;
+            const percent = Math.round((current / total) * 100);
+            setUploadProgress(percent); // Update progress state
+          },
         });
         setIsUploading(false);
+        setUploadProgress(0); // Reset progress
         const newName = response.data.newName;
         router.push("/" + newName);
       } catch (error) {
         setIsUploading(false);
+        setUploadProgress(0); // Reset progress on error
         console.error("Upload failed:", error);
       }
     }
@@ -40,7 +49,13 @@ export default function UploadForm() {
         <div className="bg-black/90 text-white fixed inset-0 flex items-center">
           <div className="w-full text-center">
             <h2 className="text-4xl mb-4">Uploading...</h2>
-            <h3 className="text-xl">Please wait...</h3>
+            <div className="w-2/3 mx-auto bg-gray-700 rounded-full h-4">
+              <div
+                className="bg-green-600 h-4 rounded-full"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+            </div>
+            <h3 className="text-xl mt-2">{uploadProgress}%</h3>
           </div>
         </div>
       )}
