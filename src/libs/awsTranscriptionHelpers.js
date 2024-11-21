@@ -23,6 +23,7 @@ function secondsToHHMMSSMS(timeString) {
 }
 
 export function transcriptionItemsToSrt(items) {
+  console.log("Transcription items:", items.length);
   let srt = "";
   let i = 1;
 

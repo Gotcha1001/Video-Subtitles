@@ -114,10 +114,11 @@ export default function ResultVideo({ filename, transcriptionItems }) {
         }
       });
 
-      // Apply font size without changing positioning
       await ffmpeg.exec([
         "-i",
         filename,
+        "-t",
+        "60", // Limit video to 60 seconds (1 minute)
         "-preset",
         "ultrafast",
         "-vf",
