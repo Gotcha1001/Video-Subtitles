@@ -36,11 +36,11 @@ export default function FilePage({ params }) {
   }
 
   if (isTranscribing) {
-    return <div>Transcribing your video ...</div>;
+    return <div className="animate-bounce">Transcribing your video ...</div>;
   }
 
   if (isFetchingInfo) {
-    return <div>Fetching Infomation...</div>;
+    return <div className="animate-bounce">Fetching Infomation...</div>;
   }
 
   return (
