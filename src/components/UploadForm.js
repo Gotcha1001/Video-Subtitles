@@ -15,12 +15,22 @@ export default function UploadForm() {
     if (files.length > 0) {
       const file = files[0];
       setIsUploading(true);
-      const response = await axios.postForm("/api/upload", {
-        file,
-      });
-      setIsUploading(false);
-      const newName = response.data.newName;
-      router.push("/" + newName);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await axios.post("/api/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        setIsUploading(false);
+        const newName = response.data.newName;
+        router.push("/" + newName);
+      } catch (error) {
+        setIsUploading(false);
+        console.error("Upload failed:", error);
+      }
     }
   }
 
