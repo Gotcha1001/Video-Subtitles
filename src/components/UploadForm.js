@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 
 export default function UploadForm() {
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0); // State for progress
-
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   async function upload(ev) {
@@ -15,7 +15,16 @@ export default function UploadForm() {
     const files = ev.target.files;
     if (files.length > 0) {
       const file = files[0];
+
+      // File size validation
+      const maxSize = 50 * 1024 * 1024; // 50MB
+      if (file.size > maxSize) {
+        setErrorMessage("File is too large. Maximum size is 50MB.");
+        return;
+      }
+
       setIsUploading(true);
+      setErrorMessage(""); // Clear any previous error messages
       const formData = new FormData();
       formData.append("file", file);
 
@@ -28,16 +37,19 @@ export default function UploadForm() {
             const total = progressEvent.total;
             const current = progressEvent.loaded;
             const percent = Math.round((current / total) * 100);
-            setUploadProgress(percent); // Update progress state
+            setUploadProgress(percent);
           },
         });
         setIsUploading(false);
-        setUploadProgress(0); // Reset progress
+        setUploadProgress(0);
         const newName = response.data.newName;
         router.push("/" + newName);
       } catch (error) {
         setIsUploading(false);
-        setUploadProgress(0); // Reset progress on error
+        setUploadProgress(0);
+        setErrorMessage(
+          error.response?.data?.message || "Upload failed. Please try again."
+        );
         console.error("Upload failed:", error);
       }
     }
@@ -59,6 +71,7 @@ export default function UploadForm() {
           </div>
         </div>
       )}
+      {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
       <label className="bg-green-600 py-2 px-6 rounded-full inline-flex gap-2 border-2 border-purple-700/50 cursor-pointer">
         <UploadIcon />
         <span>Choose File</span>
