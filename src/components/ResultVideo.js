@@ -118,7 +118,7 @@ export default function ResultVideo({ filename, transcriptionItems }) {
         "-i",
         filename,
         "-t",
-        "60", // Limit video to 60 seconds (1 minute)
+        "120", // Limit video to 60 seconds (1 minute)
         "-preset",
         "ultrafast",
         "-vf",
